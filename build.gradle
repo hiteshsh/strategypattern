@@ -1,0 +1,47 @@
+group 'strategypattern-in-automation'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.5
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile 'com.codeborne:selenide:4.6'
+    testCompile 'org.testng:testng:6.10'
+    testCompile 'org.apache.commons:commons-lang3:3.5'
+    testCompile group: 'com.github.javafaker', name: 'javafaker', version: '0.13'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.10.0'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.10.0'
+
+}
+
+test {
+    useTestNG {
+        testLogging.showStandardStreams = true
+        suites 'src/test/resources/testng.xml'
+//        beforeTest {
+//            descriptor ->logger.lifecycle("Running test: " + descriptor)
+//        }
+
+    }
+
+    def browser= System.getProperty("browser")
+    def browserSize=System.getProperty("browserSize")
+    def env= System.getProperty("environment")
+    def chromeoptions=System.getProperty("chromeoptions.args")
+    if(env!=null)
+        systemProperty 'environment', env
+    else
+        systemProperty 'environment', 'integration'
+    if (browserSize!=null)
+        systemProperty 'selenide.browserSize', browserSize
+    if(chromeoptions!=null)
+        systemProperty "chromeoptions.args", chromeoptions
+
+}
